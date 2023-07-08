@@ -8,23 +8,33 @@ from telegram import ParseMode, InlineKeyboardButton, InlineKeyboardMarkup
 class Messenger:
     """Send a message and give a chance to edit it."""
 
-    parse_modes = {'md': ParseMode.MARKDOWN, 'html': ParseMode.HTML}
-
     @staticmethod
-    def from_message(bot, update, msg_handler, parse_mode='md', bufsize=0):
+    def from_message(bot, update, msg_handler, parse_mode='Markdown', bufsize=0):
         """Build a new Messenger referring to a pre-existing message."""
         m = Messenger(bot, update, parse_mode=parse_mode, bufsize=bufsize)
         m._msg = msg_handler
         return m
 
     @staticmethod
-    def from_query(bot, query, parse_mode='md', bufsize=0):
-        """Build a new Messenger tied to a query response."""
+    def from_query(bot, query, parse_mode='Markdown', bufsize=0):
+        """Build a new Messenger tied to a query response.
+        @param bot: Bot instance
+        @param query: Query instance
+        @param parse_mode: Can be 'Markdown' or 'HTML'
+        @param bufsize: How many edits to store before sending
+        @return: Messenger instance
+        """
         return Messenger.from_message(bot, query, query.message,
                                       parse_mode, bufsize)
 
-    def __init__(self, bot, update, message=None, parse_mode='md', bufsize=8):
-        """Create a new context for messaging."""
+    def __init__(self, bot, update, message=None, parse_mode='Markdown', bufsize=8):
+        """Create a new context for messaging.
+        @param bot: Bot instance
+        @param update: Update instance
+        @param message: Initial message to send
+        @param parse_mode: Can be 'Markdown' or 'HTML'
+        @param bufsize: How many edits to store before sending
+        """
         logging.debug('Creating a Messenger')
         self.bot = bot
         self.update = update
@@ -62,7 +72,7 @@ class Messenger:
             text=text,
             chat_id=self.update.message.chat_id,
             message_id=self._msg.message_id,
-            parse_mode=Messenger.parse_modes.get(self._mode),
+            parse_mode=self._mode,
             reply_markup=keyboard,
         )
 
@@ -74,7 +84,7 @@ class Messenger:
         return self.bot.send_message(
             chat_id=self.update.message.chat_id,
             text=msg,
-            parse_mode=Messenger.parse_modes.get(self._mode),
+            parse_mode=self._mode,
             reply_markup=keyboard,
         )
 
