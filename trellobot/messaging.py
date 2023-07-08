@@ -2,7 +2,7 @@
 
 
 import logging
-from telegram import ParseMode, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 
 class Messenger:
